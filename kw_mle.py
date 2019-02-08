@@ -10,17 +10,17 @@ def _streamprinter(text):
     sys.stdout.flush()
 
 
-def kwp(data, grid_mean):
+def kwp(data, grid_of_mean):
     """
-    Solve Kiefer-Wolfowitz MLE primal problem.
+    Solve Kiefer-Wolfowitz MLE primal form.
     :param data:
-    :param grid_mean:
+    :param grid_of_mean:
     :return prior: estimated prior
     :return mixture: estimated mixture density
     """
-    len_grid = len(grid_mean)
+    len_grid = len(grid_of_mean)
     sz = len(data)
-    location = np.subtract.outer(data, grid_mean)
+    location = np.subtract.outer(data, grid_of_mean)
 
     A_raw = np.asarray([norm.pdf(location[i], scale=1) for i in range(sz)])
     A_1 = np.concatenate((A_raw, -np.identity(sz)), axis=1)
