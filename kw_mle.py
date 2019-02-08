@@ -76,7 +76,7 @@ def kwp(data, grid_of_mean):
 
             task.optimize()
 
-            v = [0.0] * num_var
+            v = np.zeros(num_var)
             task.getsolutionslice(
                 mosek.soltype.itr,
                 mosek.solitem.xx,
