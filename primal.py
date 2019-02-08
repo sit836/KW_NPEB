@@ -15,7 +15,8 @@ def kwp(data, grid_mean):
     Solve Kiefer-Wolfowitz MLE primal problem.
     :param data:
     :param grid_mean:
-    :return:
+    :return prior: estimated prior
+    :return mixture: estimated mixture density
     """
     len_grid = len(grid_mean)
     sz = len(data)
