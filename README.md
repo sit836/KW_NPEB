@@ -1,1 +1,1 @@
-# Kiefer-Wolfowitz Nonparametric Epirical Bayes
+# Kiefer-Wolfowitz Nonparametric Empirical Bayes

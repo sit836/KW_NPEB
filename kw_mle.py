@@ -1,8 +1,8 @@
-import matplotlib.pyplot as plt
-import mosek
 import numpy as np
-import sys
 from scipy.stats import norm
+import sys
+
+import mosek
 
 
 def _streamprinter(text):
@@ -22,7 +22,8 @@ def kwp(data, grid_of_mean):
     sz = len(data)
     location = np.subtract.outer(data, grid_of_mean)
 
-    A_raw = np.asarray([norm.pdf(location[i], scale=1) for i in range(sz)])
+    # A_raw = np.asarray([norm.pdf(location[i], scale=1) for i in range(sz)])
+    A_raw = norm.pdf(location, scale=1)
     A_1 = np.concatenate((A_raw, -np.identity(sz)), axis=1)
     A_2 = np.array([1] * len_grid + [0] * sz).T
     A = np.vstack((A_1, A_2))
