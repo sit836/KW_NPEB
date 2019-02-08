@@ -20,8 +20,8 @@ def kwp(data, grid_mean):
     len_grid = len(grid_mean)
     sz = len(data)
     location = np.subtract.outer(data, grid_mean)
-    A_raw = np.asarray([norm.pdf(location[i], scale=1) for i in range(sz)])
 
+    A_raw = np.asarray([norm.pdf(location[i], scale=1) for i in range(sz)])
     A_1 = np.concatenate((A_raw, -np.identity(sz)), axis=1)
     A_2 = np.array([1] * len_grid + [0] * sz).T
     A = np.vstack((A_1, A_2))
