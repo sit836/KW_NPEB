@@ -2,17 +2,14 @@ import sys
 
 sys.path.append("..")
 
-from kw_mle import kwd
+from kw_mle import KWMLE
 from plot import *
 from simulation import simulate_discrete_prior
 
-sample_sz = 300
-len_grid = 500
+data = simulate_discrete_prior(sz=300)
 
-data = simulate_discrete_prior(sample_sz)
-grid_of_mean = np.linspace(min(data), max(data), len_grid)
+kw_mle = KWMLE(data)
+prior, mixture = kw_mle.kwd()
 
-prior, mixture = kwd(data, grid_of_mean)
-
-plot_prior(grid_of_mean, prior)
-plot_mixture(data, mixture)
+plot_prior(kw_mle)
+plot_mixture(kw_mle)

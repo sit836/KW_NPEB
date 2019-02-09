@@ -10,172 +10,172 @@ def _streamprinter(text):
     sys.stdout.flush()
 
 
-def kwp(data, grid_of_mean):
-    """
-    Solve Kiefer-Wolfowitz MLE in its primal form.
-    :param data: 1-D observation
-    :param grid_of_mean: 1-D grid of means
-    :return prior: estimated prior
-    :return mixture: estimated mixture density
-    """
-    len_grid = len(grid_of_mean)
-    sz = len(data)
-    location = np.subtract.outer(data, grid_of_mean)
+class KWMLE:
+    def __init__(self, df, len_grid=500):
+        self.df = df
+        self.grid_of_mean = np.linspace(min(df), max(df), len_grid)
 
-    A_raw = norm.pdf(location, scale=1)
-    A_1 = np.concatenate((A_raw, -np.identity(sz)), axis=1)
-    A_2 = np.array([1] * len_grid + [0] * sz).T
-    A = np.vstack((A_1, A_2))
+    def kwp(self):
+        """
+        Solve Kiefer-Wolfowitz MLE in its primal form.
+        :return prior: estimated prior
+        :return mixture: estimated mixture density
+        """
 
-    with mosek.Env() as env:
-        env.set_Stream(mosek.streamtype.log, _streamprinter)
-        with env.Task(0, 0) as task:
-            task.set_Stream(mosek.streamtype.log, _streamprinter)
+        len_grid = len(self.grid_of_mean)
+        sz = len(self.df)
+        location = np.subtract.outer(self.df, self.grid_of_mean)
 
-            num_var = sz + len_grid
-            num_con = sz + 1
+        A_raw = norm.pdf(location, scale=1)
+        A_1 = np.concatenate((A_raw, -np.identity(sz)), axis=1)
+        A_2 = np.array([1] * len_grid + [0] * sz).T
+        A = np.vstack((A_1, A_2))
 
-            bkc = [mosek.boundkey.fx] * num_con
-            blc = [0] * sz + [1]
-            buc = [0] * sz + [1]
+        with mosek.Env() as env:
+            env.set_Stream(mosek.streamtype.log, _streamprinter)
+            with env.Task(0, 0) as task:
+                task.set_Stream(mosek.streamtype.log, _streamprinter)
 
-            bkx = [mosek.boundkey.ra] * num_var
-            blx = [0] * num_var
-            bux = [1] * num_var
+                num_var = sz + len_grid
+                num_con = sz + 1
 
-            task.appendvars(num_var)
-            task.appendcons(num_con)
+                bkc = [mosek.boundkey.fx] * num_con
+                blc = [0] * sz + [1]
+                buc = [0] * sz + [1]
 
-            task.putvarboundslice(0, num_var, bkx, blx, bux)
-            task.putconboundslice(0, num_con, bkc, blc, buc)
+                bkx = [mosek.boundkey.ra] * num_var
+                blx = [0] * num_var
+                bux = [1] * num_var
 
-            opro = [mosek.scopr.log] * sz
-            oprjo = list(range(len_grid, num_var))
-            oprfo = [-1] * sz
-            oprgo = [1] * sz
-            oprho = [0] * sz
+                task.appendvars(num_var)
+                task.appendcons(num_con)
 
-            asub = [list(range(A.shape[0]))] * num_var
-            aval = []
-            # aval[j] contains the non-zero values of column j
-            for i in range(0, A.shape[1]):
-                aval.append(list(A[:, i]))
+                task.putvarboundslice(0, num_var, bkx, blx, bux)
+                task.putconboundslice(0, num_con, bkc, blc, buc)
 
-            for j in range(num_var):
-                task.putacol(j, asub[j], aval[j])
+                opro = [mosek.scopr.log] * sz
+                oprjo = list(range(len_grid, num_var))
+                oprfo = [-1] * sz
+                oprgo = [1] * sz
+                oprho = [0] * sz
 
-            oprc = [mosek.scopr.ent]
-            opric = [0]
-            oprjc = [0]
-            oprfc = [0.0]
-            oprgc = [0.0]
-            oprhc = [0.0]
+                asub = [list(range(A.shape[0]))] * num_var
+                aval = []
+                # aval[j] contains the non-zero values of column j
+                for i in range(0, A.shape[1]):
+                    aval.append(list(A[:, i]))
 
-            task.putSCeval(opro, oprjo, oprfo, oprgo, oprho,
-                           oprc, opric, oprjc, oprfc, oprgc, oprhc)
+                for j in range(num_var):
+                    task.putacol(j, asub[j], aval[j])
 
-            task.optimize()
+                oprc = [mosek.scopr.ent]
+                opric = [0]
+                oprjc = [0]
+                oprfc = [0.0]
+                oprgc = [0.0]
+                oprhc = [0.0]
 
-            v = np.zeros(num_var)
-            task.getsolutionslice(
-                mosek.soltype.itr,
-                mosek.solitem.xx,
-                0, num_var,
-                v)
+                task.putSCeval(opro, oprjo, oprfo, oprgo, oprho,
+                               oprc, opric, oprjc, oprfc, oprgc, oprhc)
 
-            prior = v[0:len_grid]
-            mixture = v[len_grid:num_var]
+                task.optimize()
 
-            return prior, mixture
+                v = np.zeros(num_var)
+                task.getsolutionslice(
+                    mosek.soltype.itr,
+                    mosek.solitem.xx,
+                    0, num_var,
+                    v)
 
+                self.prior = v[0:len_grid]
+                self.mixture = v[len_grid:num_var]
 
-def kwd(data, grid_of_mean):
-    """
-    Solve Kiefer-Wolfowitz MLE in its dual form.
-    :param data: 1-D observation
-    :param grid_of_mean: 1-D grid of means
-    :return prior: estimated prior
-    :return mixture: estimated mixture density
-    """
-    len_grid = len(grid_of_mean)
-    sz = len(data)
-    location = np.subtract.outer(data, grid_of_mean)
-    A = norm.pdf(location, scale=1)
+                return self.prior, self.mixture
 
-    print("location: ", location)
+    def kwd(self):
+        """
+        Solve Kiefer-Wolfowitz MLE in its dual form.
+        :return prior: estimated prior
+        :return mixture: estimated mixture density
+        """
+        len_grid = len(self.grid_of_mean)
+        sz = len(self.df)
+        location = np.subtract.outer(self.df, self.grid_of_mean)
+        A = norm.pdf(location, scale=1)
 
+        print("location: ", location)
 
-    with mosek.Env() as env:
-        env.set_Stream(mosek.streamtype.log, _streamprinter)
-        with env.Task(0, 0) as task:
-            task.set_Stream(mosek.streamtype.log, _streamprinter)
-            # task.putdouparam(mosek.dparam.intpnt_co_tol_rel_gap, 1.0e-8)
+        with mosek.Env() as env:
+            env.set_Stream(mosek.streamtype.log, _streamprinter)
+            with env.Task(0, 0) as task:
+                task.set_Stream(mosek.streamtype.log, _streamprinter)
+                # task.putdouparam(mosek.dparam.intpnt_co_tol_rel_gap, 1.0e-8)
 
-            num_var = sz
-            num_con = len_grid
-            # Since the actual value of Infinity is ignored, we define it solely
-            # for symbolic purposes:
-            inf = 0.0
+                num_var = sz
+                num_con = len_grid
+                # Since the actual value of Infinity is ignored, we define it solely
+                # for symbolic purposes:
+                inf = 0.0
 
-            bkc = [mosek.boundkey.ra] * num_con
-            blc = [0] * num_con
-            buc = [num_var] * num_con
+                bkc = [mosek.boundkey.ra] * num_con
+                blc = [0] * num_con
+                buc = [num_var] * num_con
 
-            bkx = [mosek.boundkey.lo] * num_var
-            blx = [0] * num_var
-            bux = [+inf] * num_var
+                bkx = [mosek.boundkey.lo] * num_var
+                blx = [0] * num_var
+                bux = [+inf] * num_var
 
-            task.appendvars(num_var)
-            task.appendcons(num_con)
+                task.appendvars(num_var)
+                task.appendcons(num_con)
 
-            task.putvarboundslice(0, num_var, bkx, blx, bux)
-            task.putconboundslice(0, num_con, bkc, blc, buc)
+                task.putvarboundslice(0, num_var, bkx, blx, bux)
+                task.putconboundslice(0, num_con, bkc, blc, buc)
 
-            opro = [mosek.scopr.log] * num_var
-            oprjo = list(range(0, num_var))
-            oprfo = [-1] * num_var
-            oprgo = [1] * num_var
-            oprho = [0] * num_var
+                opro = [mosek.scopr.log] * num_var
+                oprjo = list(range(0, num_var))
+                oprfo = [-1] * num_var
+                oprgo = [1] * num_var
+                oprho = [0] * num_var
 
-            asub = [list(range(len_grid))] * num_var
+                asub = [list(range(len_grid))] * num_var
 
-            for j in range(num_var):
-                task.putacol(j, asub[j], A[j, :])
+                for j in range(num_var):
+                    task.putacol(j, asub[j], A[j, :])
 
-            oprc = [mosek.scopr.ent]
-            opric = [0]
-            oprjc = [0]
-            oprfc = [0.0]
-            oprgc = [0.0]
-            oprhc = [0.0]
+                oprc = [mosek.scopr.ent]
+                opric = [0]
+                oprjc = [0]
+                oprfc = [0.0]
+                oprgc = [0.0]
+                oprhc = [0.0]
 
-            task.putSCeval(opro, oprjo, oprfo, oprgo, oprho,
-                           oprc, opric, oprjc, oprfc, oprgc, oprhc)
+                task.putSCeval(opro, oprjo, oprfo, oprgo, oprho,
+                               oprc, opric, oprjc, oprfc, oprgc, oprhc)
 
-            task.optimize()
+                task.optimize()
 
-            v = [0.0] * num_var
-            task.getsolutionslice(
-                mosek.soltype.itr,
-                mosek.solitem.xx,
-                0, num_var,
-                v)
+                v = [0.0] * num_var
+                task.getsolutionslice(
+                    mosek.soltype.itr,
+                    mosek.solitem.xx,
+                    0, num_var,
+                    v)
 
-            _slc = [0.0] * num_con
-            task.getsolutionslice(
-                mosek.soltype.itr,
-                mosek.solitem.slc,
-                0, num_con,
-                _slc)
+                _slc = [0.0] * num_con
+                task.getsolutionslice(
+                    mosek.soltype.itr,
+                    mosek.solitem.slc,
+                    0, num_con,
+                    _slc)
 
-            _suc = [0.0] * num_con
-            task.getsolutionslice(
-                mosek.soltype.itr,
-                mosek.solitem.suc,
-                0, num_con,
-                _suc)
+                _suc = [0.0] * num_con
+                task.getsolutionslice(
+                    mosek.soltype.itr,
+                    mosek.solitem.suc,
+                    0, num_con,
+                    _suc)
 
-            prior = np.array(_suc) - np.array(_slc)
-            mixture = np.matmul(A, prior)
+                self.prior = np.array(_suc) - np.array(_slc)
+                self.mixture = np.matmul(A, self.prior)
 
-            return prior, mixture
+                return self.prior, self.mixture
