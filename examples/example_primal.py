@@ -1,7 +1,3 @@
-import sys
-
-sys.path.append("..")
-
 from kw_mle import KWMLE
 from plot import *
 from simulation import simulation
