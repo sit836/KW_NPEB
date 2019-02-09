@@ -1,6 +1,6 @@
-import sys
-
-sys.path.append("..")
+# import sys
+#
+# sys.path.append("..")
 
 from kw_mle import KWMLE
 from plot import *
