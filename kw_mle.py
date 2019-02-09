@@ -180,4 +180,5 @@ class KWMLE:
         location = np.subtract.outer(df, self.grid_of_mean)
         norm_density = norm.pdf(location, scale=1)
         weighted_support = self.grid_of_mean * self.prior
-        return np.matmul(norm_density, weighted_support) / self.mixture
+        mixture = np.matmul(norm_density, self.prior)
+        return np.matmul(norm_density, weighted_support) / mixture

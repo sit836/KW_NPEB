@@ -13,3 +13,4 @@ prior, mixture = kw_mle.kw_dual()
 
 plot_prior(kw_mle)
 plot_mixture(kw_mle)
+plot_prediction(kw_mle, data)
