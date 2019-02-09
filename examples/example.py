@@ -1,5 +1,8 @@
+# import sys
+# sys.path.append("..")
+
 from kw_mle import KWMLE
-from examples.plot import *
+from plot import *
 from simulation import simulation
 
 data = simulation(sz=300, method="dis_uniform")
