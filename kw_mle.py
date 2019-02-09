@@ -171,10 +171,13 @@ class KWMLE:
                 self.mixture = np.matmul(self.norm_density, self.prior)
                 return self.prior, self.mixture
 
-    def prediction(self):
+    def prediction(self, df):
         """
         Compute the posterior mean.
+        :param df: 1-D dataframe
         :return: the posterior mean
         """
+        location = np.subtract.outer(df, self.grid_of_mean)
+        norm_density = norm.pdf(location, scale=1)
         weighted_support = self.grid_of_mean * self.prior
-        return np.matmul(self.norm_density, weighted_support) / self.mixture
+        return np.matmul(norm_density, weighted_support) / self.mixture
