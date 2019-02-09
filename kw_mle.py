@@ -16,7 +16,7 @@ class KWMLE:
         self.grid_of_mean = np.linspace(min(df), max(df), len_grid)
 
         location = np.subtract.outer(self.df, self.grid_of_mean)
-        self.norm_density = np.array([norm.pdf(location[i],scale=stds) for i in range(df.shape[0])])
+        self.norm_density = np.array([norm.pdf(location[i],scale=stds[i]) for i in range(df.shape[0])])
 
     def kw_primal(self):
         """
@@ -176,7 +176,7 @@ class KWMLE:
         Compute the posterior mean.
         """
         location = np.subtract.outer(df, self.grid_of_mean)
-        norm_density = np.array([norm.pdf(location[i],scale=stds) for i in range(df.shape[0])])
+        norm_density = np.array([norm.pdf(location[i],scale=stds[i]) for i in range(df.shape[0])])
         weighted_support = self.grid_of_mean * self.prior
         mixture = np.matmul(norm_density, self.prior)
         return np.matmul(norm_density, weighted_support) / mixture

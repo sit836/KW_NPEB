@@ -16,9 +16,9 @@ def plot_mixture(kw_mle):
     plt.title("Estimated mixture")
     plt.show()
 
-def plot_prediction(kw_mle, df):
+def plot_prediction(kw_mle, df, stds):
     df_sorted = np.sort(df)
-    pred = kw_mle.prediction(df_sorted)
+    pred = kw_mle.prediction(df_sorted, stds)
 
     plt.plot(df_sorted, pred, '-o')
     plt.title("Prediction")
