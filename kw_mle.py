@@ -15,7 +15,7 @@ class KWMLE:
         self.df = df
         self.grid_of_mean = np.linspace(min(df), max(df), len_grid)
 
-    def kwp(self):
+    def kw_primal(self):
         """
         Solve Kiefer-Wolfowitz MLE in its primal form.
         :return prior: estimated prior
@@ -92,7 +92,7 @@ class KWMLE:
 
                 return self.prior, self.mixture
 
-    def kwd(self):
+    def kw_dual(self):
         """
         Solve Kiefer-Wolfowitz MLE in its dual form.
         :return prior: estimated prior
