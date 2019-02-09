@@ -21,7 +21,6 @@ class KWMLE:
         :return prior: estimated prior
         :return mixture: estimated mixture density
         """
-
         len_grid = len(self.grid_of_mean)
         sz = len(self.df)
         location = np.subtract.outer(self.df, self.grid_of_mean)
@@ -61,7 +60,7 @@ class KWMLE:
 
                 asub = [list(range(A.shape[0]))] * num_var
                 aval = []
-                # aval[j] contains the non-zero values of column j
+
                 for i in range(0, A.shape[1]):
                     aval.append(list(A[:, i]))
 
@@ -109,12 +108,9 @@ class KWMLE:
             env.set_Stream(mosek.streamtype.log, _streamprinter)
             with env.Task(0, 0) as task:
                 task.set_Stream(mosek.streamtype.log, _streamprinter)
-                # task.putdouparam(mosek.dparam.intpnt_co_tol_rel_gap, 1.0e-8)
 
                 num_var = sz
                 num_con = len_grid
-                # Since the actual value of Infinity is ignored, we define it solely
-                # for symbolic purposes:
                 inf = 0.0
 
                 bkc = [mosek.boundkey.ra] * num_con
