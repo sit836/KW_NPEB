@@ -8,7 +8,7 @@ from simulation import simulation
 
 data = simulation(sz=300, method="dis_uniform")
 
-kw_mle = KWMLE(data)
+kw_mle = KWMLE(data, stds=[1]*len(data))
 prior, mixture = kw_mle.kw_primal()
 
 plot_prior(kw_mle)

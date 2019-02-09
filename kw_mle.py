@@ -11,12 +11,12 @@ def _streamprinter(text):
 
 
 class KWMLE:
-    def __init__(self, df, len_grid=500):
+    def __init__(self, df, stds, len_grid=500):
         self.df = df
         self.grid_of_mean = np.linspace(min(df), max(df), len_grid)
 
         location = np.subtract.outer(self.df, self.grid_of_mean)
-        self.norm_density = norm.pdf(location, scale=1)
+        self.norm_density = np.array([norm.pdf(location[i],scale=stds) for i in range(df.shape[0])])
 
     def kw_primal(self):
         """
@@ -171,14 +171,12 @@ class KWMLE:
                 self.mixture = np.matmul(self.norm_density, self.prior)
                 return self.prior, self.mixture
 
-    def prediction(self, df):
+    def prediction(self, df, stds):
         """
         Compute the posterior mean.
-        :param df: 1-D dataframe
-        :return: the posterior mean
         """
         location = np.subtract.outer(df, self.grid_of_mean)
-        norm_density = norm.pdf(location, scale=1)
+        norm_density = np.array([norm.pdf(location[i],scale=stds) for i in range(df.shape[0])])
         weighted_support = self.grid_of_mean * self.prior
         mixture = np.matmul(norm_density, self.prior)
         return np.matmul(norm_density, weighted_support) / mixture
