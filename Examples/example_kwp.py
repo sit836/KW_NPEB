@@ -13,3 +13,5 @@ prior, mixture = kw_mle.kw_primal()
 
 plot_prior(kw_mle)
 plot_mixture(kw_mle)
+
+plot_prediction(kw_mle)

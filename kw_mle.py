@@ -15,6 +15,9 @@ class KWMLE:
         self.df = df
         self.grid_of_mean = np.linspace(min(df), max(df), len_grid)
 
+        location = np.subtract.outer(self.df, self.grid_of_mean)
+        self.norm_density = norm.pdf(location, scale=1)
+
     def kw_primal(self):
         """
         Solve Kiefer-Wolfowitz MLE in its primal form.
@@ -23,10 +26,8 @@ class KWMLE:
         """
         len_grid = len(self.grid_of_mean)
         sz = len(self.df)
-        location = np.subtract.outer(self.df, self.grid_of_mean)
 
-        A_raw = norm.pdf(location, scale=1)
-        A_1 = np.concatenate((A_raw, -np.identity(sz)), axis=1)
+        A_1 = np.concatenate((self.norm_density, -np.identity(sz)), axis=1)
         A_2 = np.array([1] * len_grid + [0] * sz).T
         A = np.vstack((A_1, A_2))
 
@@ -88,7 +89,6 @@ class KWMLE:
 
                 self.prior = v[0:len_grid]
                 self.mixture = v[len_grid:num_var]
-
                 return self.prior, self.mixture
 
     def kw_dual(self):
@@ -99,10 +99,6 @@ class KWMLE:
         """
         len_grid = len(self.grid_of_mean)
         sz = len(self.df)
-        location = np.subtract.outer(self.df, self.grid_of_mean)
-        A = norm.pdf(location, scale=1)
-
-        print("location: ", location)
 
         with mosek.Env() as env:
             env.set_Stream(mosek.streamtype.log, _streamprinter)
@@ -136,7 +132,7 @@ class KWMLE:
                 asub = [list(range(len_grid))] * num_var
 
                 for j in range(num_var):
-                    task.putacol(j, asub[j], A[j, :])
+                    task.putacol(j, asub[j], self.norm_density[j, :])
 
                 oprc = [mosek.scopr.ent]
                 opric = [0]
@@ -172,6 +168,13 @@ class KWMLE:
                     _suc)
 
                 self.prior = np.array(_suc) - np.array(_slc)
-                self.mixture = np.matmul(A, self.prior)
-
+                self.mixture = np.matmul(self.norm_density, self.prior)
                 return self.prior, self.mixture
+
+    def prediction(self):
+        """
+        Compute the posterior mean.
+        :return: the posterior mean
+        """
+        weighted_support = self.grid_of_mean * self.prior
+        return np.matmul(self.norm_density, weighted_support) / self.mixture
