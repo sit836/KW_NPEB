@@ -4,9 +4,9 @@ sys.path.append("..")
 
 from kw_mle import KWMLE
 from plot import *
-from simulation import simulate_discrete_uniform_prior
+from simulation import simulation
 
-data = simulate_discrete_uniform_prior(sz=300)
+data = simulation(sz=300, method="norm")
 
 kw_mle = KWMLE(data)
 prior, mixture = kw_mle.kw_primal()
