@@ -1,5 +1,5 @@
 from kw_mle import KWMLE
-from plot import *
+from examples.plot import *
 from simulation import simulation
 
 data = simulation(sz=300, method="dis_uniform")
