@@ -20,6 +20,6 @@ def plot_prediction(kw_mle, df):
     df_sorted = np.sort(df)
     pred = kw_mle.prediction(df_sorted)
 
-    plt.plot(df_sorted, pred)
+    plt.plot(df_sorted, pred, '-o')
     plt.title("Prediction")
     plt.show()

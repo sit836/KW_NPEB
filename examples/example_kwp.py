@@ -3,10 +3,10 @@ import sys
 sys.path.append("..")
 
 from kw_mle import KWMLE
-from examples.plot import *
-from simulation import simulate_discrete_prior
+from plot import *
+from simulation import simulate_discrete_uniform_prior
 
-data = simulate_discrete_prior(sz=300)
+data = simulate_discrete_uniform_prior(sz=300)
 
 kw_mle = KWMLE(data)
 prior, mixture = kw_mle.kw_primal()
