@@ -7,8 +7,7 @@ sz = 300
 data = normal(loc=10, size=sz) + normal(size=sz)
 stds = [1]*len(data)
 kw_mle = KWMLE(data, stds=stds)
-# prior, mixture = kw_mle.kw_dual()
-prior, mixture = kw_mle.kw_primal()
+prior, mixture = kw_mle.kw_dual()
 
 plot_prior(kw_mle)
 plot_mixture(kw_mle)

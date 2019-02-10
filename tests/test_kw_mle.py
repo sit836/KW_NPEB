@@ -12,7 +12,7 @@ def generate_data(sz, mean_signal, mean_prior, std_signal, std_prior):
 
 def normal_bayes_estimators(data, mean_prior, std_signal, std_prior):
     return ((std_prior ** 2 / (std_prior ** 2 + std_signal ** 2)) * data
-    + (std_signal ** 2 / (std_prior ** 2 + std_signal ** 2)) * mean_prior)
+            + (std_signal ** 2 / (std_prior ** 2 + std_signal ** 2)) * mean_prior)
 
 
 def test_kw_primal():
@@ -23,9 +23,9 @@ def test_kw_primal():
     signal, data = generate_data(sz, mean_signal, mean_prior,
                                  std_signal, std_prior)
     oracle_pred = normal_bayes_estimators(data, mean_prior, std_signal, std_prior)
-    kw_mle = KWMLE(data, stds=[std_prior]*len(data))
+    kw_mle = KWMLE(data, stds=[std_prior] * len(data))
     prior, mixture = kw_mle.kw_primal()
-    kw_pred = kw_mle.prediction(data, [std_prior]*len(data))
+    kw_pred = kw_mle.prediction(data, [std_prior] * len(data))
 
     import matplotlib.pyplot as plt
     plt.scatter(oracle_pred, kw_pred)

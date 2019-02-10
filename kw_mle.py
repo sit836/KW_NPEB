@@ -28,9 +28,9 @@ class KWMLE:
         len_grid = len(self.grid_of_mean)
         sz = len(self.df)
 
-        A_1 = hstack([self.norm_density, -np.identity(sz)])
-        A_2 = np.array([1] * len_grid + [0] * sz).T
-        A = vstack([A_1, A_2])
+        con_1 = hstack([self.norm_density, -np.identity(sz)])
+        con_2 = np.array([1] * len_grid + [0] * sz).T
+        con = vstack([con_1, con_2])
 
         with mosek.Env() as env:
             env.set_Stream(mosek.streamtype.log, _streamprinter)
@@ -60,11 +60,11 @@ class KWMLE:
                 oprgo = [1] * sz
                 oprho = [0] * sz
 
-                asub = [list(range(A.shape[0]))] * num_var
+                asub = [list(range(con.shape[0]))] * num_var
                 aval = []
 
-                for i in range(0, A.shape[1]):
-                    aval.append(A.getcol(i).toarray().flatten())
+                for i in range(0, con.shape[1]):
+                    aval.append(con.getcol(i).toarray().flatten())
 
                 for j in range(num_var):
                     task.putacol(j, asub[j], aval[j])
