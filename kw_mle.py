@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.sparse import csr_matrix, hstack, vstack
 from scipy.stats import norm
 import sys
 
@@ -16,7 +17,7 @@ class KWMLE:
         self.grid_of_mean = np.linspace(min(df), max(df), len_grid)
 
         location = np.subtract.outer(self.df, self.grid_of_mean)
-        self.norm_density = np.array([norm.pdf(location[i],scale=stds[i]) for i in range(df.shape[0])])
+        self.norm_density = csr_matrix([norm.pdf(location[i], scale=stds[i]) for i in range(df.shape[0])])
 
     def kw_primal(self):
         """
@@ -27,9 +28,9 @@ class KWMLE:
         len_grid = len(self.grid_of_mean)
         sz = len(self.df)
 
-        A_1 = np.concatenate((self.norm_density, -np.identity(sz)), axis=1)
+        A_1 = hstack([self.norm_density, -np.identity(sz)])
         A_2 = np.array([1] * len_grid + [0] * sz).T
-        A = np.vstack((A_1, A_2))
+        A = vstack([A_1, A_2])
 
         with mosek.Env() as env:
             env.set_Stream(mosek.streamtype.log, _streamprinter)
@@ -63,7 +64,7 @@ class KWMLE:
                 aval = []
 
                 for i in range(0, A.shape[1]):
-                    aval.append(list(A[:, i]))
+                    aval.append(A.getcol(i).toarray().flatten())
 
                 for j in range(num_var):
                     task.putacol(j, asub[j], aval[j])
@@ -132,7 +133,7 @@ class KWMLE:
                 asub = [list(range(len_grid))] * num_var
 
                 for j in range(num_var):
-                    task.putacol(j, asub[j], self.norm_density[j, :])
+                    task.putacol(j, asub[j], self.norm_density.getrow(j).toarray().flatten())
 
                 oprc = [mosek.scopr.ent]
                 opric = [0]
@@ -168,7 +169,7 @@ class KWMLE:
                     _suc)
 
                 self.prior = np.array(_suc) - np.array(_slc)
-                self.mixture = np.matmul(self.norm_density, self.prior)
+                self.mixture = self.norm_density.dot(self.prior)
                 return self.prior, self.mixture
 
     def prediction(self, df, stds):
@@ -176,7 +177,7 @@ class KWMLE:
         Compute the posterior mean.
         """
         location = np.subtract.outer(df, self.grid_of_mean)
-        norm_density = np.array([norm.pdf(location[i],scale=stds[i]) for i in range(df.shape[0])])
+        norm_density = np.array([norm.pdf(location[i], scale=stds[i]) for i in range(df.shape[0])])
         weighted_support = self.grid_of_mean * self.prior
         mixture = np.matmul(norm_density, self.prior)
         return np.matmul(norm_density, weighted_support) / mixture

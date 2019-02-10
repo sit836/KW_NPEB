@@ -18,9 +18,9 @@ def simulation(sz, method):
 def simulate_discrete_uniform_prior(sz):
     support_prior = [7, 10]
     signal = np.random.choice(support_prior, sz)
-    return signal + np.random.normal(size=sz)
+    return signal + normal(size=sz)
 
 
 def simulate_norm_prior(sz):
     signal = normal(loc=10, size=sz)
-    return signal + np.random.normal(size=sz)
+    return signal + normal(size=sz)
