@@ -1,8 +1,10 @@
+from numpy.random import normal
+
 from kw_mle import KWMLE
 from plot import *
-from simulation import simulation
 
-data = simulation(sz=300, method="dis_uniform")
+sz = 300
+data = normal(loc=10, size=sz) + np.random.normal(size=sz)
 stds = [1]*len(data)
 kw_mle = KWMLE(data, stds=stds)
 prior, mixture = kw_mle.kw_dual()
