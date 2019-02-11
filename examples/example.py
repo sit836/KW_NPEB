@@ -3,7 +3,7 @@ from numpy.random import normal
 from kw_mle import KWMLE
 from plot import *
 
-sz = 300
+sz = 1000
 data = normal(loc=10, size=sz) + normal(size=sz)
 stds = [1]*len(data)
 kw_mle = KWMLE(data, stds=stds)
