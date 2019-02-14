@@ -1,9 +1,9 @@
-import numpy as np
-from scipy.sparse import csr_matrix, hstack, vstack
-from scipy.stats import norm
 import sys
 
 import mosek
+import numpy as np
+from scipy.sparse import csr_matrix, hstack, vstack
+from scipy.stats import norm
 
 
 def _streamprinter(text):
@@ -12,6 +12,10 @@ def _streamprinter(text):
 
 
 class KWMLE:
+    """
+    Solve Kiefer-Wolfowitz MLE by interior point methods as stated in Konker and Mizera (2014).
+    For reference, see: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.679.9137&rep=rep1&type=pdf
+    """
     def __init__(self, df, stds, len_grid=500):
         self.df = df
         self.grid_of_mean = np.linspace(min(df), max(df), len_grid)
