@@ -51,7 +51,6 @@ with tf.Session() as session:
     grid_of_mean = np.linspace(min(data.eval()), max(data.eval()), 300)
     location = np.subtract.outer(data.eval(), grid_of_mean)
     norm_density = [norm.pdf(location[i], scale=1) for i in range(data.eval().shape[0])]
-
     constraints = np.matmul(np.transpose(norm_density), trained_weights).flatten()
 
     plt.plot(grid_of_mean, constraints, '-o')
