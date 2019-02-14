@@ -1,5 +1,7 @@
 import warnings
 
+import numpy as np
+
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     import tensorflow as tf
@@ -40,12 +42,19 @@ problem = kw_dual(
     weights=weights,
 )
 
-n_iterations = 1000
+n_iterations = 15000
 loss_stochastic = []
+
+# global_step = tf.Variable(0, trainable=False)
+# starter_learning_rate = 1.0
+# learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step,
+#                                            1000, 0.95, staircase=True)
+learning_rate = 0.6
 
 with tf.Session() as session:
     optimizer = tfco.MultiplicativeSwapRegretOptimizer(
-        optimizer=tf.train.AdagradOptimizer(learning_rate=0.8))
+        optimizer=tf.train.AdagradOptimizer(learning_rate=learning_rate))
+    # train_op = optimizer.minimize(problem, global_step=global_step)
     train_op = optimizer.minimize(problem)
 
     session.run(tf.global_variables_initializer())
@@ -53,12 +62,12 @@ with tf.Session() as session:
         session.run(train_op)
 
         if (step + 1) % 50 == 0:
-            loss_stochastic.append(session.run(problem.objective))
+            loss_stochastic.append(problem.objective.eval())
             print("Iteration ", str(step + 1))
 
-            res = problem.constraints.eval()
-            if abs(max(res)) < 3:
-                break
+            if len(loss_stochastic) > 10:
+                if (max(abs(problem.constraints.eval())) < 1) | (np.std(loss_stochastic[-30:]) < 1.5):
+                    break
 
     trained_weights = session.run((weights))
     print("trained_weights: \n", trained_weights)
@@ -82,6 +91,6 @@ with tf.Session() as session:
     plt.axhline(sz, color='black', lw=2)
     plt.show()
 
-    plt.plot(loss_stochastic)
+    plt.plot(loss_stochastic, '-o')
     plt.title('Loss')
     plt.show()
