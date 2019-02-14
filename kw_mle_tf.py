@@ -42,14 +42,14 @@ problem = kw_dual(
     weights=weights,
 )
 
-n_iterations = 15000
+n_iterations = 30000
 loss_stochastic = []
 
 # global_step = tf.Variable(0, trainable=False)
 # starter_learning_rate = 1.0
 # learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step,
 #                                            1000, 0.95, staircase=True)
-learning_rate = 0.6
+learning_rate = 0.8
 
 with tf.Session() as session:
     optimizer = tfco.MultiplicativeSwapRegretOptimizer(
@@ -61,12 +61,12 @@ with tf.Session() as session:
     for step in range(n_iterations):
         session.run(train_op)
 
-        if (step + 1) % 50 == 0:
+        if (step + 1) % 200 == 0:
             loss_stochastic.append(problem.objective.eval())
             print("Iteration ", str(step + 1))
 
             if len(loss_stochastic) > 10:
-                if (max(abs(problem.constraints.eval())) < 1) | (np.std(loss_stochastic[-30:]) < 1.5):
+                if (max(abs(problem.constraints.eval())) < 1) | (np.std(loss_stochastic[-5:]) < 0.5):
                     break
 
     trained_weights = session.run((weights))
