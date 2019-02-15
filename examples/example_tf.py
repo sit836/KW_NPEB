@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import norm
 
-from kw_mle_tf import kw_dual
+from kw_mle_tf import KWDual
 
 tfd = tfp.distributions
 tfco = tf.contrib.constrained_optimization
@@ -18,7 +18,7 @@ sz = 100
 data = tf.add(tfd.Normal(loc=[0], scale=[1]).sample([sz]), tfd.Normal(loc=[10], scale=[2]).sample([sz]))
 weights = tf.Variable(5 * tf.ones(sz), dtype=tf.float32, name="weights")
 
-problem = kw_dual(
+problem = KWDual(
     data=data,
     weights=weights,
 )
