@@ -16,12 +16,12 @@ class KWMLE:
     Solve Kiefer-Wolfowitz MLE by interior point methods as studied in Koenker and Mizera (2014).
     For reference, see: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.679.9137&rep=rep1&type=pdf
     """
-    def __init__(self, df, stds, len_grid=500):
-        self.df = df
-        self.grid_of_mean = np.linspace(min(df), max(df), len_grid)
+    def __init__(self, data, stds, len_grid=500):
+        self.data = data
+        self.grid_of_mean = np.linspace(min(data), max(data), len_grid)
 
-        location = np.subtract.outer(self.df, self.grid_of_mean)
-        self.norm_density = csr_matrix([norm.pdf(location[i], scale=stds[i]) for i in range(df.shape[0])])
+        location = np.subtract.outer(self.data, self.grid_of_mean)
+        self.norm_density = csr_matrix([norm.pdf(location[i], scale=stds[i]) for i in range(data.shape[0])])
 
     def kw_primal(self):
         """
@@ -30,7 +30,7 @@ class KWMLE:
         :return mixture: estimated mixture density
         """
         len_grid = len(self.grid_of_mean)
-        sz = len(self.df)
+        sz = len(self.data)
 
         con_1 = hstack([self.norm_density, -np.identity(sz)])
         con_2 = np.array([1] * len_grid + [0] * sz).T
@@ -103,7 +103,7 @@ class KWMLE:
         :return mixture: estimated mixture density
         """
         len_grid = len(self.grid_of_mean)
-        sz = len(self.df)
+        sz = len(self.data)
 
         with mosek.Env() as env:
             env.set_Stream(mosek.streamtype.log, _streamprinter)

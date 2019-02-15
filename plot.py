@@ -9,18 +9,18 @@ def plot_prior(kw_mle):
 
 
 def plot_mixture(kw_mle):
-    df_sorted = np.sort(kw_mle.df)
-    mixture_sorted = kw_mle.mixture[np.argsort(kw_mle.df)]
+    data_sorted = np.sort(kw_mle.data)
+    mixture_sorted = kw_mle.mixture[np.argsort(kw_mle.data)]
 
-    plt.plot(df_sorted, mixture_sorted, '-o')
+    plt.plot(data_sorted, mixture_sorted, '-o')
     plt.title("Estimated mixture")
     plt.show()
 
 
-def plot_prediction(kw_mle, df, stds):
-    df_sorted = np.sort(df)
-    pred = kw_mle.prediction(df_sorted, stds)
+def plot_prediction(kw_mle, data, stds):
+    data_sorted = np.sort(data)
+    pred = kw_mle.prediction(data_sorted, stds)
 
-    plt.plot(df_sorted, pred, '-o')
+    plt.plot(data_sorted, pred, '-o')
     plt.title("Prediction")
     plt.show()
