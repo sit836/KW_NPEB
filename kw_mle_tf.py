@@ -5,7 +5,7 @@ tfco = tf.contrib.constrained_optimization
 tfd = tfp.distributions
 
 
-class kw_dual(tfco.ConstrainedMinimizationProblem):
+class KWDual(tfco.ConstrainedMinimizationProblem):
     def __init__(self, data, weights, len_grid=300):
         self.data = data
         self.weights = weights
