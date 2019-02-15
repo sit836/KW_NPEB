@@ -13,15 +13,26 @@ def _streamprinter(text):
 
 class KWMLE:
     """
-    Solve Kiefer-Wolfowitz MLE by interior point methods as studied in Koenker and Mizera (2014).
+    Solve 1-D Kiefer-Wolfowitz MLE by interior point methods as studied in Koenker and Mizera (2014).
     For reference, see: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.679.9137&rep=rep1&type=pdf
     """
     def __init__(self, data, stds, len_grid=500):
+        self.check_dtype(data)
+
         self.data = data
         self.grid_of_mean = np.linspace(min(data), max(data), len_grid)
 
         location = np.subtract.outer(self.data, self.grid_of_mean)
-        self.norm_density = csr_matrix([norm.pdf(location[i], scale=stds[i]) for i in range(data.shape[0])])
+        self.norm_density = csr_matrix([norm.pdf(location[i], scale=stds[i]) for i in range(len(data))])
+
+    @staticmethod
+    def check_dtype(data):
+        if isinstance(data, (list, np.ndarray)):
+            if isinstance(data, np.ndarray):
+                if data.ndim > 1:
+                    raise ValueError(f"Data must be 1-D, but got {len(data)}-D.")
+        else:
+            raise ValueError("Data must be 1-D list or np.array.")
 
     def kw_primal(self):
         """
@@ -176,12 +187,12 @@ class KWMLE:
                 self.mixture = self.norm_density.dot(self.prior)
                 return self.prior, self.mixture
 
-    def prediction(self, df, stds):
+    def prediction(self, data, stds):
         """
         Compute the posterior mean.
         """
-        location = np.subtract.outer(df, self.grid_of_mean)
-        norm_density = np.array([norm.pdf(location[i], scale=stds[i]) for i in range(df.shape[0])])
+        location = np.subtract.outer(data, self.grid_of_mean)
+        norm_density = np.array([norm.pdf(location[i], scale=stds[i]) for i in range(len(data))])
         weighted_support = self.grid_of_mean * self.prior
         mixture = np.matmul(norm_density, self.prior)
         return np.matmul(norm_density, weighted_support) / mixture
