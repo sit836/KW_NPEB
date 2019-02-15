@@ -43,7 +43,7 @@ with tf.Session() as session:
             print("Iteration ", str(step + 1))
 
             if len(loss_stochastic) > 10:
-                if (problem.max_con_val < 1) | (np.std(loss_stochastic[-5:]) < 0.5):
+                if (problem.max_con_val.eval() < 1) | (np.std(loss_stochastic[-5:]) < 0.5):
                     break
 
     trained_weights = dual_sol.eval()
