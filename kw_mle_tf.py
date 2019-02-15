@@ -6,9 +6,9 @@ tfd = tfp.distributions
 
 
 class KWDual(tfco.ConstrainedMinimizationProblem):
-    def __init__(self, data, weights, len_grid=300):
+    def __init__(self, data, dual_sol, len_grid=300):
         self.data = data
-        self.weights = weights
+        self.weights = dual_sol
         self.len_grid = len_grid
         self.sz = tf.to_float(tf.shape(data)[0])
 

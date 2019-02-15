@@ -16,11 +16,11 @@ tfco = tf.contrib.constrained_optimization
 
 sz = 100
 data = tf.add(tfd.Normal(loc=[0], scale=[1]).sample([sz]), tfd.Normal(loc=[10], scale=[2]).sample([sz]))
-weights = tf.Variable(5 * tf.ones(sz), dtype=tf.float32, name="weights")
+dual_sol = tf.Variable(5 * tf.ones(sz), dtype=tf.float32, name="weights")
 
 problem = KWDual(
     data=data,
-    weights=weights,
+    dual_sol=dual_sol,
 )
 
 n_iterations = 30000
@@ -44,7 +44,7 @@ with tf.Session() as session:
                 if (max(abs(problem.constraints.eval())) < 1) | (np.std(loss_stochastic[-5:]) < 0.5):
                     break
 
-    trained_weights = session.run((weights))
+    trained_weights = dual_sol.eval()
     print("trained_weights: \n", trained_weights)
 
     # sanity check
