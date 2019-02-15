@@ -35,13 +35,15 @@ with tf.Session() as session:
     session.run(tf.global_variables_initializer())
     for step in range(n_iterations):
         session.run(train_op)
+        _, loss_value = session.run([train_op, problem.loss])
+
 
         if (step + 1) % 200 == 0:
-            loss_stochastic.append(problem.objective.eval())
+            loss_stochastic.append(loss_value)
             print("Iteration ", str(step + 1))
 
             if len(loss_stochastic) > 10:
-                if (max(abs(problem.constraints.eval())) < 1) | (np.std(loss_stochastic[-5:]) < 0.5):
+                if (problem.max_con_val < 1) | (np.std(loss_stochastic[-5:]) < 0.5):
                     break
 
     trained_weights = dual_sol.eval()

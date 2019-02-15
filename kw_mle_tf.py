@@ -14,7 +14,8 @@ class KWDual(tfco.ConstrainedMinimizationProblem):
 
     @property
     def objective(self):
-        return (-1) * tf.reduce_sum(tf.log(self.weights))
+        self.loss = (-1) * tf.reduce_sum(tf.log(self.weights))
+        return self.loss
 
     @property
     def constraints(self):
@@ -22,4 +23,6 @@ class KWDual(tfco.ConstrainedMinimizationProblem):
         location = self.data - grid_of_mean
         dist = tfd.Normal(loc=location, scale=1)
         normal_density = dist.prob([1])
-        return tf.tensordot(tf.transpose(self.weights), normal_density, axes=1) - self.sz * tf.ones(self.len_grid)
+        constraint_values = tf.tensordot(tf.transpose(self.weights), normal_density, axes=1) - self.sz * tf.ones(self.len_grid)
+        self.max_con_val = tf.reduce_max(tf.abs(constraint_values))
+        return constraint_values
