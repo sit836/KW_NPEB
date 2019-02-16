@@ -17,20 +17,18 @@ class KWMLE:
     For reference, see: http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.679.9137&rep=rep1&type=pdf
     """
     def __init__(self, data, stds, len_grid=500):
-        self.check_dtype(data)
-
         self.data = data
+        self.check_dtype()
         self.grid_of_mean = np.linspace(min(data), max(data), len_grid)
 
         location = np.subtract.outer(self.data, self.grid_of_mean)
         self.norm_density = csr_matrix([norm.pdf(location[i], scale=stds[i]) for i in range(len(data))])
 
-    @staticmethod
-    def check_dtype(data):
-        if isinstance(data, (list, np.ndarray)):
-            if isinstance(data, np.ndarray):
-                if data.ndim > 1:
-                    raise ValueError(f"Data must be 1-D, but got {len(data)}-D.")
+    def check_dtype(self):
+        if isinstance(self.data, (list, np.ndarray)):
+            if isinstance(self.data, np.ndarray):
+                if self.data.ndim > 1:
+                    raise ValueError(f"Data must be 1-D, but got {len(self.data)}-D.")
         else:
             raise ValueError("Data must be 1-D list or np.array.")
 
