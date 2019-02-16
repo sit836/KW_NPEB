@@ -8,12 +8,6 @@ df = pd.DataFrame(boston.data)
 df.columns = boston.feature_names
 df['PRICE'] = boston.target
 
-print(df.nunique())
-
-target = 'PRICE'
-feature = 'RAD'
-target_grouped = df.groupby(feature)[target]
-
 # ncols = 2
 # nrows = int(np.ceil(target_grouped.ngroups / ncols))
 # fig, axes = plt.subplots(nrows=nrows, ncols=ncols)
@@ -22,10 +16,40 @@ target_grouped = df.groupby(feature)[target]
 # ax.legend()
 # plt.show()
 
-gp_stds = pd.DataFrame(df.groupby(feature)[target].std())
-gp_stds.columns = [feature + '_GP_STDS']
-df_joined = df.set_index(feature).join(gp_stds)
+# cat_features = ['ZN', 'CHAS', 'RAD']
+cat_features = ['ZN']
 
-kw_mle = KWMLE(df_joined[target].values, stds=df_joined[feature + '_GP_STDS'].values)
-prior, mixture = kw_mle.kw_dual()
-pred = kw_mle.prediction(df_joined[target].values, stds=df_joined[feature + '_GP_STDS'].values)
+target = 'PRICE'
+
+feature = cat_features
+target_grouped = df.groupby(feature)[target]
+
+print(df[feature].unique())
+gp_stds = pd.DataFrame(df.groupby(feature)[target].std())
+
+# print("df[feature].unique(): ", pd.Series(df[feature]).unique())
+# print("gp_stds: ", gp_stds)
+#
+# std_col = feature + '_GP_STDS'
+# gp_stds.columns = [std_col]
+# df_joined = df.set_index(feature).join(gp_stds)
+#
+# obs, stds = df_joined[target].values, df_joined[std_col].values
+# kw_mle = KWMLE(obs, stds=stds)
+# prior, mixture = kw_mle.kw_dual()
+# pred = kw_mle.prediction(obs, stds=stds)
+# df[feature] = pred
+
+# for feature in cat_features:
+#     target_grouped = df.groupby(feature)[target]
+#
+#     gp_stds = pd.DataFrame(df.groupby(feature)[target].std())
+#     std_col = feature + '_GP_STDS'
+#     gp_stds.columns = [std_col]
+#     df_joined = df.set_index(feature).join(gp_stds)
+#
+#     obs, stds = df_joined[target].values, df_joined[std_col].values
+#     kw_mle = KWMLE(obs, stds=stds)
+#     prior, mixture = kw_mle.kw_dual()
+#     pred = kw_mle.prediction(obs, stds=stds)
+#     df[feature] = pred
