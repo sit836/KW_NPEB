@@ -25,7 +25,77 @@ class KWMLE:
         else:
             raise ValueError("Data must be 1-D list or np.array.")
 
-    def fit(self):
+    def kw_primal(self):
+        """
+        Solve Kiefer-Wolfowitz MLE in its primal form.
+        :return prior: estimated prior
+        :return mixture: estimated mixture density
+        """
+        len_grid = len(self.grid_of_mean)
+        sz = len(self.data)
+
+        con_1 = hstack([self.norm_density, -np.identity(sz)])
+        con_2 = np.array([1] * len_grid + [0] * sz).T
+        con = vstack([con_1, con_2])
+
+        with mosek.Env() as env:
+            with env.Task(0, 0) as task:
+                num_var = sz + len_grid
+                num_con = sz + 1
+
+                bkc = [mosek.boundkey.fx] * num_con
+                blc = [0] * sz + [1]
+                buc = [0] * sz + [1]
+
+                bkx = [mosek.boundkey.ra] * num_var
+                blx = [0] * num_var
+                bux = [1] * num_var
+
+                task.appendvars(num_var)
+                task.appendcons(num_con)
+
+                task.putvarboundslice(0, num_var, bkx, blx, bux)
+                task.putconboundslice(0, num_con, bkc, blc, buc)
+
+                opro = [mosek.scopr.log] * sz
+                oprjo = list(range(len_grid, num_var))
+                oprfo = [-1] * sz
+                oprgo = [1] * sz
+                oprho = [0] * sz
+
+                asub = [list(range(con.shape[0]))] * num_var
+                aval = []
+
+                for i in range(0, con.shape[1]):
+                    aval.append(con.getcol(i).toarray().flatten())
+
+                for j in range(num_var):
+                    task.putacol(j, asub[j], aval[j])
+
+                oprc = [mosek.scopr.ent]
+                opric = [0]
+                oprjc = [0]
+                oprfc = [0.0]
+                oprgc = [0.0]
+                oprhc = [0.0]
+
+                task.putSCeval(opro, oprjo, oprfo, oprgo, oprho,
+                               oprc, opric, oprjc, oprfc, oprgc, oprhc)
+
+                task.optimize()
+
+                v = np.zeros(num_var)
+                task.getsolutionslice(
+                    mosek.soltype.itr,
+                    mosek.solitem.xx,
+                    0, num_var,
+                    v)
+
+                self.prior = v[0:len_grid]
+                self.mixture = v[len_grid:num_var]
+                return self.prior, self.mixture
+
+    def kw_dual(self):
         """
         Solve Kiefer-Wolfowitz MLE in its dual form.
         :return prior: estimated prior
