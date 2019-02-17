@@ -1,14 +1,7 @@
-import sys
-
 import mosek
 import numpy as np
 from scipy.sparse import csr_matrix, hstack, vstack
 from scipy.stats import norm
-
-
-def _streamprinter(text):
-    sys.stdout.write(text)
-    sys.stdout.flush()
 
 
 class KWMLE:
@@ -46,10 +39,7 @@ class KWMLE:
         con = vstack([con_1, con_2])
 
         with mosek.Env() as env:
-            env.set_Stream(mosek.streamtype.log, _streamprinter)
             with env.Task(0, 0) as task:
-                task.set_Stream(mosek.streamtype.log, _streamprinter)
-
                 num_var = sz + len_grid
                 num_con = sz + 1
 
@@ -115,10 +105,7 @@ class KWMLE:
         sz = len(self.data)
 
         with mosek.Env() as env:
-            env.set_Stream(mosek.streamtype.log, _streamprinter)
             with env.Task(0, 0) as task:
-                task.set_Stream(mosek.streamtype.log, _streamprinter)
-
                 num_var = sz
                 num_con = len_grid
                 inf = 0.0
