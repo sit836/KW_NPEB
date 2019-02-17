@@ -35,7 +35,7 @@ for feature in cat_features:
     stds_grouped = target_grouped.std().values.flatten() / np.sqrt(counts_grouped)
 
     kw_mle = KWMLE(means_grouped, stds=stds_grouped)
-    prior, mixture = kw_mle.kw_dual()
+    kw_mle.fit()
 
     train_enc = kw_mle.prediction(means_grouped, stds=stds_grouped)
     enc_dict = dict(zip(target_grouped.mean().index, train_enc))
