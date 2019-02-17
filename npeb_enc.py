@@ -1,6 +1,6 @@
 from kw_mle import KWMLE
 
-def npeb_enc(cat_features, target):
+def npeb_enc(cat_features, label, target):
     train = cat_features.join(target)
 
     target_grouped = train.groupby(feature)[target]
