@@ -1,6 +1,6 @@
 from numpy.random import normal
 
-from old.kw_mle import *
+from kw_mle import *
 
 
 def generate_data(sz, mean_signal, std_signal, std_noise):
@@ -35,7 +35,7 @@ def test_kw_primal():
     oracle_pred = Bayes_oracle_estimator(data, mean_signal, std_signal, std_noise)
     js_pred = James_Stein_estimator(data, std_noise)
     kw_mle = KWMLE(data, stds=[std_noise] * len(data))
-    _, _ = kw_mle.kw_primal()
+    kw_mle.fit()
     kw_pred = kw_mle.prediction(data, [std_noise] * len(data))
 
     print("Oracel, James-Stein, Kiefer-Wolfowitz")
