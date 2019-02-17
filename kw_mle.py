@@ -28,8 +28,6 @@ class KWMLE:
     def fit(self):
         """
         Solve Kiefer-Wolfowitz MLE in its dual form.
-        :return prior: estimated prior
-        :return mixture: estimated mixture density
         """
         len_grid = len(self.grid_of_mean)
         sz = len(self.data)
@@ -100,7 +98,6 @@ class KWMLE:
 
                 self.prior = np.array(_suc) - np.array(_slc)
                 self.mixture = self.norm_density.dot(self.prior)
-                return self.prior, self.mixture
 
     def prediction(self, data, stds):
         """
