@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.datasets import load_boston
+from sklearn.model_selection import train_test_split
 
 from kw_mle import KWMLE
 
@@ -16,40 +17,26 @@ df['PRICE'] = boston.target
 # ax.legend()
 # plt.show()
 
-# cat_features = ['ZN', 'CHAS', 'RAD']
-cat_features = ['ZN']
-
+cat_features = ['CHAS', 'RAD']
 target = 'PRICE'
 
 feature = cat_features
 target_grouped = df.groupby(feature)[target]
 
-print(df[feature].unique())
-gp_stds = pd.DataFrame(df.groupby(feature)[target].std())
+X_train, X_test, y_train, y_test = train_test_split(df[cat_features], df[target], test_size=0.33, random_state=123)
+train = X_train.join(y_train)
 
-# print("df[feature].unique(): ", pd.Series(df[feature]).unique())
-# print("gp_stds: ", gp_stds)
-#
-# std_col = feature + '_GP_STDS'
-# gp_stds.columns = [std_col]
-# df_joined = df.set_index(feature).join(gp_stds)
-#
-# obs, stds = df_joined[target].values, df_joined[std_col].values
-# kw_mle = KWMLE(obs, stds=stds)
-# prior, mixture = kw_mle.kw_dual()
-# pred = kw_mle.prediction(obs, stds=stds)
-# df[feature] = pred
+for feature in cat_features:
+    target_grouped = train.groupby(feature)[target]
 
-# for feature in cat_features:
-#     target_grouped = df.groupby(feature)[target]
-#
-#     gp_stds = pd.DataFrame(df.groupby(feature)[target].std())
-#     std_col = feature + '_GP_STDS'
-#     gp_stds.columns = [std_col]
-#     df_joined = df.set_index(feature).join(gp_stds)
-#
-#     obs, stds = df_joined[target].values, df_joined[std_col].values
-#     kw_mle = KWMLE(obs, stds=stds)
-#     prior, mixture = kw_mle.kw_dual()
-#     pred = kw_mle.prediction(obs, stds=stds)
-#     df[feature] = pred
+    gp_stds = pd.DataFrame(train.groupby(feature)[target].std())
+    std_col = feature + '_GP_STDS'
+    gp_stds.columns = [std_col]
+    train_joined = train.set_index(feature).join(gp_stds)
+
+    train_obs, train_stds = train_joined[target].values, train_joined[std_col].values
+
+    kw_mle = KWMLE(train_obs, stds=train_stds)
+    prior, mixture = kw_mle.kw_dual()
+    pred = kw_mle.prediction(train_obs, stds=train_stds)
+    train[feature + '_new'] = pred
