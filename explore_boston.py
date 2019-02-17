@@ -41,12 +41,8 @@ for feature in cat_features:
     kw_mle = KWMLE(train_data, stds=train_stds)
     prior, mixture = kw_mle.kw_dual()
 
-    train_enc_raw = kw_mle.prediction(train_data, stds=train_stds)
-    train_enc = pd.DataFrame(train_enc_raw, index=means_grouped.index, columns=[feature + '_enc'])
+    train_enc = kw_mle.prediction(train_data, stds=train_stds)
+    enc_dict = dict(zip(means_grouped.index, train_enc))
+    X_test[feature + '_enc'] = X_test[feature].map(enc_dict)
 
-    print("train_enc\n", train_enc)
-
-    test_data = pd.DataFrame(X_test[feature], index=X_test[feature], columns=[feature])
-    test_data.join(train_enc)
-    print("test_data.join(train_enc)\n", test_data.join(train_enc))
-
+print(X_test)
