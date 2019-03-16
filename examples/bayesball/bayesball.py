@@ -2,34 +2,32 @@ DATA_PATH = 'D:/py_projects/npeb/MAP/data/brown_2008.csv'
 
 import numpy as np
 import pandas as pd
-
 from utils import *
+
+from kw_mle import KWMLE
 
 df_raw = pd.read_csv(DATA_PATH)
 train, test = get_train_test(df_raw)
 
-X = train[['AB(4)', 'AB(5)', 'AB(6)', 'H(4)', 'H(5)', 'H(6)']]
-train_label = variance_stabilizing(train['H'], train['AB'])
-test_label = variance_stabilizing(test['H'], test['AB'])
-
-GRID_SZ = 400
-grid_theta = np.linspace(min(train_label) - 1, max(train_label) + 1, GRID_SZ)
+train_label = variance_stabilizing(train['H'].values, train['AB'].values)
+test_label = variance_stabilizing(test['H'].values, test['AB'].values)
 
 std_train = 1/(2*np.sqrt(train['AB'].values))
 std_test = 1/(2*np.sqrt(test['AB'].values))
 
-dual = kwd(train_label, std_train, grid_theta)
-prior = dual['p']
+kw_mle = KWMLE(train_label, stds=std_train)
+kw_mle.fit()
 
-naive_pred_raw = train_label
-npeb_pred_raw = npeb_prediction(train_label, std_train, prior, grid_theta)
-js_pred_raw = james_stein_prediction(train_label, std_train)
+naive_pred_raw = pd.DataFrame(train_label, index=train.index)
+npeb_pred_raw = pd.DataFrame(kw_mle.prediction(train_label, std_train), index=train.index)
+js_pred_raw = pd.DataFrame(james_stein_prediction(train_label, std_train), index=train.index)
 
-naive_pred = naive_pred_raw.loc[test_label.index]
-npeb_pred = npeb_pred_raw.loc[test_label.index]
-js_pred = js_pred_raw.loc[test_label.index]
+naive_pred = naive_pred_raw.loc[test.index]
+npeb_pred = npeb_pred_raw.loc[test.index]
+js_pred = js_pred_raw.loc[test.index]
 
-tse_naive = tse(test_label, naive_pred, std_test)
+tse_naive = tse(np.array(test_label), np.array(naive_pred).flatten(), std_test)
 tse_npeb = tse(np.array(test_label), np.array(npeb_pred).flatten(), std_test)
 tse_js = tse(np.array(test_label), np.array(js_pred).flatten(), std_test)
-tse_naive, tse_npeb, tse_js
+
+print(tse_npeb/tse_naive, tse_js/tse_naive)

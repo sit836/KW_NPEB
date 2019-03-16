@@ -25,8 +25,22 @@ def get_train_test(df_raw):
 def variance_stabilizing(num_hit, num_ab):
     """
     A variance stabilizing transformation stated in Brown (2008)
-    :param num_hit:
-    :param num_ab:
-    :return:
     """
     return np.arcsin(np.sqrt((num_hit + 1 / 4) / (num_ab + 1 / 2)))
+
+
+def tse(truth, pred, std):
+    """
+    Total squared error (Brown, 2008)
+    """
+    return sum((truth - pred) ** 2) - sum(std ** 2)
+
+
+def james_stein_prediction(y, std):
+    """
+    Heterogeneous James Stein estimator (Brown, 2008, page 20)
+    """
+    w = (1 / (std ** 2)) / sum((1 / std) ** 2)
+    wlse = [sum(w * y)] * len(y)
+    S = sum(((y - wlse) / std) ** 2)
+    return wlse + (1 - (len(y) - 3) / S) * (y - wlse)
