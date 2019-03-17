@@ -8,5 +8,5 @@ League baseball
 
 ## Contributors
 
-* **Sile Tao**
-* **Li Zhang**
+* [Sile Tao](https://www.linkedin.com/in/sile-tao-95523941/)
+* [Li Zhang](https://www.linkedin.com/in/li-zhang-0350833b/)
