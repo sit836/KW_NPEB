@@ -30,4 +30,5 @@ tse_naive = tse(np.array(test_label), np.array(naive_pred).flatten(), std_test)
 tse_npeb = tse(np.array(test_label), np.array(npeb_pred).flatten(), std_test)
 tse_js = tse(np.array(test_label), np.array(js_pred).flatten(), std_test)
 
-print(tse_npeb/tse_naive, tse_js/tse_naive)
+print("relative total squared error of nonparametric empirical Bayes: ", tse_npeb/tse_naive)
+print("relative total squared error of James-Stein estimator: ", tse_js/tse_naive)
