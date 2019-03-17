@@ -2,7 +2,7 @@
 Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator for mixtures.
 
 
-## Authors
+## Contributors
 
 * **Sile Tao**
 * **Li Zhang**
