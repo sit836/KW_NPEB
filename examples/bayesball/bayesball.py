@@ -2,7 +2,7 @@ DATA_PATH = 'D:/py_projects/npeb/MAP/data/brown_2008.csv'
 
 import numpy as np
 import pandas as pd
-from utils import *
+from utils.utils import *
 
 from kw_mle import KWMLE
 
