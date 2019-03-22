@@ -1,14 +1,13 @@
-DATA_PATH = 'D:/py_projects/npeb/MAP/data/brown_2008.csv'
-
 import numpy as np
 import pandas as pd
 from utils.utils import *
 
 from kw_mle import KWMLE
 
+DATA_PATH = 'D:/py_projects/npeb/MAP/data/brown_2008.csv'
 df_raw = pd.read_csv(DATA_PATH)
-train, test = get_train_test(df_raw)
 
+train, test = get_train_test(df_raw)
 train_label = variance_stabilizing(train['H'].values, train['AB'].values)
 test_label = variance_stabilizing(test['H'].values, test['AB'].values)
 
