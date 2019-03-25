@@ -6,6 +6,10 @@ Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator for mixt
 You will need:
 * Mosek (>=8.1.30 required)
 
+### Installing
+```
+pip install kwnpeb
+```
 
 ## Examples
 * [simple](https://github.com/sit836/KW_NPEB/tree/1D_KW/examples/simple) - The basic usage
@@ -15,3 +19,6 @@ League baseball
 ## Contributors
 * [Sile Tao](https://www.linkedin.com/in/sile-tao-95523941/)
 * [Li Zhang](https://www.linkedin.com/in/li-zhang-0350833b/)
+
+## License
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
