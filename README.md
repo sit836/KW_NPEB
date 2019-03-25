@@ -1,7 +1,15 @@
 # Kiefer-Wolfowitz Nonparametric Empirical Bayes
-Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator for mixtures. An interior-point method is used 
-for univariate responses. For details, see Koenker and Mizera (2014): [Convex Optimization Shape Constraints Compound Decisions 
-and Empirical Bayes Rules](http://www.stat.ualberta.ca/~mizera/Preprints/brown.pdf). 
+Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator for mixtures.
+
+## Getting Started
+### Prerequisites 
+You will need:
+* Mosek (>=8.1.30 required)
+
+### Installing
+```
+pip install kwnpeb
+```
 
 ## Examples
 * [simple](https://github.com/sit836/KW_NPEB/tree/1D_KW/examples/simple) - The basic usage
@@ -11,3 +19,6 @@ League baseball
 ## Contributors
 * [Sile Tao](https://www.linkedin.com/in/sile-tao-95523941/)
 * [Li Zhang](https://www.linkedin.com/in/li-zhang-0350833b/)
+
+## License
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
