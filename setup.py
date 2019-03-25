@@ -5,7 +5,6 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name='kwnpeb',
     version='0.1',
-    scripts=['kwnpeb'],
     author="Sile Tao, Li Zhang",
     author_email="sile@ualberta.ca, lzhang2@ualberta.ca",
     description="Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator",
