@@ -11,13 +11,13 @@ class KWMLE:
     """
     def __init__(self, data, stds, len_grid=500):
         self.data = data
-        self.check_dtype()
+        self._check_dtype()
         self.grid_of_mean = np.linspace(min(data), max(data), len_grid)
 
         location = np.subtract.outer(self.data, self.grid_of_mean)
         self.norm_density = csr_matrix([norm.pdf(location[i], scale=stds[i]) for i in range(len(data))])
 
-    def check_dtype(self):
+    def _check_dtype(self):
         if isinstance(self.data, (list, np.ndarray)):
             if isinstance(self.data, np.ndarray):
                 if self.data.ndim > 1:
