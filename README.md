@@ -4,6 +4,7 @@ Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator for mixt
 ## Getting Started
 ### Prerequisites 
 You will need:
+* Mosek (>=8.1.30 required)
 
 
 ## Examples
