@@ -1,2 +1,2 @@
-Mosek==8.1.30
+Mosek @ https://github.com/MOSEK/Mosek.pip/archive/v8.0.91.zip
 scipy==0.19.1
