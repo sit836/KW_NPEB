@@ -1,6 +1,6 @@
 from numpy.random import normal
 
-from kw_mle import *
+from kw_mle.kw_mle import *
 
 
 def generate_data(sz, mean_signal, std_signal, std_noise):

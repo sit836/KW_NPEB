@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from numpy.random import normal
 
-from kw_mle import KWMLE
+from kw_mle.kw_mle import KWMLE
 
 sz = 1000
 data = normal(loc=10, size=sz) + normal(size=sz)
