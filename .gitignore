@@ -1,0 +1,9 @@
+*.iml
+.idea
+venv
+*.pyc
+build/
+*.pyo
+dist/
+*.egg-info/
+.DS_Store
