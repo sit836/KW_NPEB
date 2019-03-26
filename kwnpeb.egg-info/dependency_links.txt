@@ -1,1 +1,1 @@
-
+https://download.mosek.com/stable/wheel/index.html

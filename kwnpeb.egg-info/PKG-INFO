@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: kwnpeb
-Version: 0.1.1
+Version: 0.1.5
 Summary: Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator
 Home-page: https://github.com/sit836/KW_NPEB
 Author: Sile Tao, Li Zhang

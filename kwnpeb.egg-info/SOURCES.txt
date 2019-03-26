@@ -5,4 +5,5 @@ kw_mle/kw_mle.py
 kwnpeb.egg-info/PKG-INFO
 kwnpeb.egg-info/SOURCES.txt
 kwnpeb.egg-info/dependency_links.txt
+kwnpeb.egg-info/requires.txt
 kwnpeb.egg-info/top_level.txt
