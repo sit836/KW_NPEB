@@ -16,7 +16,7 @@ def get_requirements(path):
 
 setuptools.setup(
     name='kwnpeb',
-    version='0.1.9',
+    version='0.1.10',
     author="Sile Tao, Li Zhang, Guanqi Huang",
     author_email="sile@ualberta.ca, lzhang2@ualberta.ca, frank.huangguanqi@gmail.com",
     description="Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator",
