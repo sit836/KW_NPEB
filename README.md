@@ -8,14 +8,14 @@ You will need:
 * pip (>= 19.0.3)
 * MOSEK (>=8.1.30) 
 
-<font color="red">Important:</font> 
+Important about MOSEK:
 * MOSEK is a commercial optimization software. Please visit [MOSEK](https://www.mosek.com/) for license information.
 * PIP: 
 ```
 pip install -f https://download.mosek.com/stable/wheel/index.html Mosek --user
 ``` 
-For different ways of installation, please visit their [installation page](https://docs.mosek.com/8.1/pythonapi/install-interface.html)
-* MOSEK needs to be installed in the <font color="red">global environment</font>. 
+For different ways of installation, please visit their [installation page](https://docs.mosek.com/8.1/pythonapi/install-interface.html).
+* MOSEK needs to be installed in the GLOBAL environment. 
  
 
 
