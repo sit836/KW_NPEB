@@ -6,7 +6,17 @@ Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator for mixt
 You will need:
 * python (>= 3.6)
 * pip (>= 19.0.3)
-* Mosek (>=8.1.30) needs to be installed in the global environment. 
+* MOSEK (>=8.1.30) 
+
+<font color="red">Important:</font> 
+* MOSEK is a commercial optimization software. Please visit [MOSEK](https://www.mosek.com/) for license information.
+* PIP: 
+```
+pip install -f https://download.mosek.com/stable/wheel/index.html Mosek --user
+``` 
+For different ways of installation, please visit their [installation page](https://docs.mosek.com/8.1/pythonapi/install-interface.html)
+* MOSEK needs to be installed in the <font color="red">global environment</font>. 
+ 
 
 
 ### Installing
@@ -15,8 +25,8 @@ pip install kwnpeb
 ```
 
 ## Examples
-* [simple](https://github.com/sit836/KW_NPEB/tree/1D_KW/examples/simple) - The basic usage
-* [bayesball](https://github.com/sit836/KW_NPEB/tree/1D_KW/examples/bayesball) - In-season prediction of batting averages with the 2005 Major
+* [simple](https://github.com/sit836/KW_NPEB/tree/master/examples/simple) - The basic usage
+* [bayesball](https://github.com/sit836/KW_NPEB/tree/master/examples/bayesball) - In-season prediction of batting averages with the 2005 Major
 League baseball
 
 ## Contributors
