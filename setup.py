@@ -17,7 +17,7 @@ def get_requirements(path):
 setuptools.setup(
     name='kwnpeb',
     version='0.1.6',
-    author="Sile Tao, Li Zhang",
+    author="Sile Tao, Li Zhang, Guanqi Huang",
     author_email="sile@ualberta.ca, lzhang2@ualberta.ca",
     description="Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator",
     long_description=long_description,
@@ -25,7 +25,6 @@ setuptools.setup(
     url="https://github.com/sit836/KW_NPEB",
     packages=setuptools.find_packages(),
     install_requires=get_requirements('requirements.txt'),
-    dependency_links=['https://download.mosek.com/stable/wheel/index.html'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
