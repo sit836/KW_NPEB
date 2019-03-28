@@ -11,8 +11,8 @@ def get_train_test(df_raw):
     s2_bool = ab_s2.sum(axis=1) > MIN_NUM_AB
     test_df = df_raw[s1_bool & s2_bool]
 
-    train = train_df[['First Name', 'Last Name', 'AB(4)', 'AB(5)', 'AB(6)', 'H(4)', 'H(5)', 'H(6)']]
-    test = test_df[['First Name', 'Last Name', 'AB(7)', 'AB(8)', 'AB(9-10)', 'H(7)', 'H(8)', 'H(9-10)']]
+    train = train_df[['First Name', 'Last Name', 'AB(4)', 'AB(5)', 'AB(6)', 'H(4)', 'H(5)', 'H(6)']].copy()
+    test = test_df[['First Name', 'Last Name', 'AB(7)', 'AB(8)', 'AB(9-10)', 'H(7)', 'H(8)', 'H(9-10)']].copy()
 
     train['AB'] = train[['AB(4)', 'AB(5)', 'AB(6)']].sum(axis=1)
     train['H'] = train[['H(4)', 'H(5)', 'H(6)']].sum(axis=1)
