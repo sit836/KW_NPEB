@@ -1,5 +1,8 @@
 # Kiefer-Wolfowitz Nonparametric Empirical Bayes
-Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator for mixtures.
+Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator for mixtures. 
+
+In contrast to the previous approaches, the optimization problem is reformulated into a convex problem by 
+[Koenker and Mizera (2014)](http://www.stat.ualberta.ca/~mizera/Preprints/brown.pdf)'s method and then solved by interior-point method.
 
 ## Getting Started
 ### Prerequisites 
