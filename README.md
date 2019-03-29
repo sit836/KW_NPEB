@@ -2,7 +2,12 @@
 Compute the Kiefer-Wolfowitz nonparametric maximum likelihood estimator for mixtures. 
 
 In contrast to the previous approaches, the optimization problem is reformulated into a convex problem by 
-[Koenker and Mizera (2014)](http://www.stat.ualberta.ca/~mizera/Preprints/brown.pdf)'s method and then solved by interior-point method.
+[Koenker and Mizera (2014)](http://www.stat.ualberta.ca/~mizera/Preprints/brown.pdf)'s method and efficiently solved by 
+interior-point method.
+
+## Making predictions without features
+Given a training set T = {y_i}, the algorithm provides a way to construct a predictor of future y-values such that the sum 
+of squared errors between observations and predictors is minimized.  
 
 ## Getting Started
 ### Prerequisites 
